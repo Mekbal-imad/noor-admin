@@ -6,7 +6,6 @@ const menuItems = [
   { icon: 'ti-layout-dashboard', label: 'الرئيسية',   path: '/dashboard'     },
   { icon: 'ti-users',            label: 'المعلمون',   path: '/teachers'      },
   { icon: 'ti-school',           label: 'الطلاب',     path: '/students'      },
-  { icon: 'ti-book',           label: 'الفصول',     path: '/classes'       },
   { icon: 'ti-school',         label: 'المراحل',    path: '/grades'        },
   { icon: 'ti-clipboard-list',   label: 'الاختبارات', path: '/exams'         },
   { icon: 'ti-chart-bar',        label: 'الإحصائيات', path: '/stats'         },

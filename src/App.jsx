@@ -5,7 +5,6 @@ import DashboardLayout from './components/DashboardLayout'
 import Home from './pages/Home'
 import Teachers from './pages/teachers/Teachers'
 import Students from './pages/students/Students'
-import Classes from './pages/classes/Classes'
 import Grades from './pages/grades/Grades'
 import GradeDetail from './pages/grades/GradeDetail'
 import Exams from './pages/exams/Exams'
@@ -30,7 +29,6 @@ export default function App() {
         <Route path="dashboard"     element={<Home />} />
         <Route path="teachers"      element={<Teachers />} />
         <Route path="students"      element={<Students />} />
-        <Route path="classes"       element={<Classes />} />
         <Route path="grades"           element={<Grades />} />
         <Route path="grades/:id"       element={<GradeDetail />} />
         <Route path="exams"         element={<Exams />} />
