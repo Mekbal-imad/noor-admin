@@ -243,14 +243,14 @@ export default function Stats() {
                 <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #e5e7eb' }}>
                   <p style={{ margin: 0, fontSize: '14px', fontWeight: '600', color: '#111' }}>تفاصيل الطلاب</p>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1.5fr', padding: '8px 16px', background: '#f9fafb', fontSize: '11px', color: '#6b7280' }}>
-  <span>الطالب</span><span>نسبة الحضور</span><span>متوسط الحفظ</span><span>الحصص</span><span>آخر حفظ</span>
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr 1.5fr', padding: '8px 16px', background: '#f9fafb', fontSize: '11px', color: '#6b7280' }}>
+  <span>الطالب</span><span>نسبة الحضور</span><span>متوسط الحفظ</span><span>الحصص</span><span>حفظ جديد</span><span>آخر حفظ</span>
 </div>
                 {gradeStats.students.length === 0 ? (
                   <div style={{ padding: '30px', textAlign: 'center', color: '#9ca3af', fontSize: '13px' }}>لا يوجد طلاب</div>
                 ) : (
                   gradeStats.students.map((st, i) => (
-                    <div key={st.id} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1.5fr', padding: '10px 16px', alignItems: 'center', borderBottom: i < gradeStats.students.length - 1 ? '0.5px solid #f3f4f6' : 'none', fontSize: '12px' }}>
+                    <div key={st.id} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr 1.5fr', padding: '10px 16px', alignItems: 'center', borderBottom: i < gradeStats.students.length - 1 ? '0.5px solid #f3f4f6' : 'none', fontSize: '12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#1a6b5a', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '10px', fontWeight: '600', flexShrink: 0 }}>
                           {st.name?.split(' ').map(w => w[0]).join('').slice(0, 2)}
@@ -267,6 +267,9 @@ export default function Stats() {
                       </div>
                       <span style={{ color: '#374151', fontWeight: '500' }}>{st.avg_grade}/10</span>
                       <span style={{ color: '#6b7280' }}>{st.total_sessions}</span>
+                      <span style={{ color: '#374151', fontWeight: '500' }}>
+  {st.memorization_count ?? 0}
+</span>
                       <div>
   {st.last_memorization ? (
     <div>
