@@ -176,6 +176,27 @@ export default function Stats() {
                   </div>
                 </div>
 
+                {/* Average attendance: e.g. 12 out of 14 students */}
+                <div style={{
+                  background: '#e1f5ee', borderRadius: '10px', padding: '12px 14px',
+                  marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                }}>
+                  <div>
+                    <p style={{ margin: 0, fontSize: '12px', color: '#0f6e56', fontWeight: '500' }}>
+                      متوسط الحضور {period === 'week' ? 'هذا الأسبوع' : period === 'month' ? 'هذا الشهر' : 'هذه السنة'}
+                    </p>
+                    <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#6b7280' }}>
+                      متوسط عدد الطلاب الحاضرين لكل حصة
+                    </p>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '20px', fontWeight: '700', color: '#0f6e56', whiteSpace: 'nowrap' }}>
+                    {gradeStats.attendance.avg_present ?? 0}
+                    <span style={{ fontSize: '13px', fontWeight: '500', color: '#6b7280' }}>
+                      {' '}من {gradeStats.attendance.total_students ?? selectedGrade.students_count ?? '—'}
+                    </span>
+                  </p>
+                </div>
+
                 {/* Daily Chart */}
                 <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px' }}>الحضور آخر 7 أيام</p>
                 <BarChart data={gradeStats.attendance.daily} />
