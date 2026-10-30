@@ -422,11 +422,12 @@ export default function Students() {
                 </div>
 
                 <div style={{ borderTop: '0.5px solid #f3f4f6', paddingTop: '12px', marginTop: '4px' }}>
-                  <p style={{ fontSize: '12px', fontWeight: '600', color: '#374151', margin: '0 0 10px' }}>بيانات ولي الأمر (اختياري)</p>
+                  <p style={{ fontSize: '12px', fontWeight: '600', color: '#374151', margin: '0 0 4px' }}>بيانات ولي الأمر (اختياري)</p>
+                  <p style={{ fontSize: '11px', color: '#9ca3af', margin: '0 0 10px' }}>يمكنك إدخال الاسم فقط، أو الاسم ورقم الهاتف، دون البريد الإلكتروني</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <input value={addForm.parent_name} onChange={e => setAddForm({ ...addForm, parent_name: e.target.value })} style={inputStyle} placeholder="اسم ولي الأمر (اختياري)" />
+                    <input value={addForm.parent_name} onChange={e => setAddForm({ ...addForm, parent_name: e.target.value })} style={inputStyle} placeholder="اسم ولي الأمر" />
+                    <input value={addForm.parent_phone} onChange={e => setAddForm({ ...addForm, parent_phone: e.target.value })} style={inputStyle} placeholder="رقم الهاتف" />
                     <input type="email" value={addForm.parent_email} onChange={e => setAddForm({ ...addForm, parent_email: e.target.value })} style={inputStyle} placeholder="البريد الإلكتروني (اختياري)" />
-                    <input value={addForm.parent_phone} onChange={e => setAddForm({ ...addForm, parent_phone: e.target.value })} style={inputStyle} placeholder="رقم الهاتف (اختياري)" />
                   </div>
                 </div>
               </div>
