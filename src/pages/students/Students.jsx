@@ -47,8 +47,9 @@ export default function Students() {
   const [gradeFilter, setGradeFilter] = useState('all')
   const [assigning, setAssigning]     = useState(null)
 
-  // Add Modal
+  // Add / Edit Modal
   const [showAddModal, setShowAddModal] = useState(false)
+  const [editing, setEditing]           = useState(null)
   const [addForm, setAddForm]           = useState(emptyAddForm)
   const [addSaving, setAddSaving]       = useState(false)
   const [addError, setAddError]         = useState('')
@@ -106,11 +107,33 @@ export default function Students() {
     } catch { } finally { setAssigning(null) }
   }
 
-  // ── Add Student ──
+  // ── Add / Edit Student ──
   const openAddModal = () => {
+    setEditing(null)
     setAddForm(emptyAddForm)
     setAddError('')
     setShowAddModal(true)
+  }
+
+  const openEditModal = (student) => {
+    setEditing(student)
+    setAddForm({
+      name: student.name ?? '',
+      grade_id: student.grade_id ?? '',
+      health_condition: student.health_condition ?? '',
+      parent_name: student.parent?.name ?? '',
+      parent_email: student.parent?.email ?? '',
+      parent_phone: student.parent?.phone ?? '',
+    })
+    setAddError('')
+    setShowAddModal(true)
+  }
+
+  const closeStudentModal = () => {
+    setShowAddModal(false)
+    setEditing(null)
+    setAddForm(emptyAddForm)
+    setAddError('')
   }
 
   const handleAddSubmit = async (e) => {
@@ -118,8 +141,12 @@ export default function Students() {
     setAddSaving(true)
     setAddError('')
     try {
-      await api.post('/admin/students', addForm)
-      setShowAddModal(false)
+      if (editing) {
+        await api.put(`/admin/students/${editing.id}`, addForm)
+      } else {
+        await api.post('/admin/students', addForm)
+      }
+      closeStudentModal()
       fetchStudents()
     } catch (err) {
       setAddError(err.response?.data?.message ?? 'حدث خطأ، حاول مجدداً')
@@ -281,7 +308,7 @@ export default function Students() {
         </div>
 
         {/* Table Header */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1.2fr 1fr 120px', padding: '10px 16px', background: '#f9fafb', fontSize: '11px', color: '#6b7280' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1.2fr 1fr 150px', padding: '10px 16px', background: '#f9fafb', fontSize: '11px', color: '#6b7280' }}>
           <span>الطالب</span><span>ولي الأمر</span><span>المرحلة</span><span>الحالة</span><span style={{ textAlign: 'center' }}>إجراءات</span>
         </div>
 
@@ -295,7 +322,7 @@ export default function Students() {
         ) : (
           filtered.map((st, i) => (
             <div key={st.id}
-              style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1.2fr 1fr 120px', padding: '12px 16px', alignItems: 'center', borderBottom: i < filtered.length - 1 ? '0.5px solid #f3f4f6' : 'none' }}
+              style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1.2fr 1fr 150px', padding: '12px 16px', alignItems: 'center', borderBottom: i < filtered.length - 1 ? '0.5px solid #f3f4f6' : 'none' }}
               onMouseEnter={e => e.currentTarget.style.background = '#fafafa'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
 
@@ -343,6 +370,10 @@ export default function Students() {
                     </button>
                   </>
                 )}
+                <button onClick={() => openEditModal(st)} disabled={acting === st.id}
+                  style={{ width: '28px', height: '28px', borderRadius: '7px', background: '#e6f1fb', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#185fa5' }} title="تعديل">
+                  <i className="ti ti-pencil" style={{ fontSize: '14px' }} aria-hidden="true" />
+                </button>
                 <button onClick={() => handleDelete(st.id)} disabled={acting === st.id}
                   style={{ width: '28px', height: '28px', borderRadius: '7px', background: '#fcebeb', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#a32d2d' }} title="حذف">
                   <i className="ti ti-trash" style={{ fontSize: '14px' }} aria-hidden="true" />
@@ -353,13 +384,13 @@ export default function Students() {
         )}
       </div>
 
-      {/* ── Add Student Modal ── */}
+      {/* ── Add / Edit Student Modal ── */}
       {showAddModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
           <div style={{ background: 'white', borderRadius: '16px', width: '480px', maxWidth: '95vw', overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
             <div style={{ padding: '16px 20px', borderBottom: '0.5px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between', direction: 'rtl' }}>
-              <span style={{ fontSize: '15px', fontWeight: '600', color: '#111' }}>إضافة طالب جديد</span>
-              <button onClick={() => setShowAddModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '20px' }}>
+              <span style={{ fontSize: '15px', fontWeight: '600', color: '#111' }}>{editing ? 'تعديل طالب' : 'إضافة طالب جديد'}</span>
+              <button onClick={closeStudentModal} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: '20px' }}>
                 <i className="ti ti-x" aria-hidden="true" />
               </button>
             </div>
@@ -373,12 +404,12 @@ export default function Students() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div>
-                  <label style={labelStyle}>اسم الطالب</label>
+                  <label style={labelStyle}>اسم الطالب *</label>
                   <input value={addForm.name} onChange={e => setAddForm({ ...addForm, name: e.target.value })} required style={inputStyle} placeholder="عبدالله محمد" />
                 </div>
 
                 <div>
-                  <label style={labelStyle}>المرحلة</label>
+                  <label style={labelStyle}>المرحلة *</label>
                   <select value={addForm.grade_id} onChange={e => setAddForm({ ...addForm, grade_id: e.target.value })} required style={inputStyle}>
                     <option value="">اختر المرحلة</option>
                     {grades.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
@@ -391,10 +422,10 @@ export default function Students() {
                 </div>
 
                 <div style={{ borderTop: '0.5px solid #f3f4f6', paddingTop: '12px', marginTop: '4px' }}>
-                  <p style={{ fontSize: '12px', fontWeight: '600', color: '#374151', margin: '0 0 10px' }}>بيانات ولي الأمر</p>
+                  <p style={{ fontSize: '12px', fontWeight: '600', color: '#374151', margin: '0 0 10px' }}>بيانات ولي الأمر (اختياري)</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <input value={addForm.parent_name} onChange={e => setAddForm({ ...addForm, parent_name: e.target.value })} required style={inputStyle} placeholder="اسم ولي الأمر" />
-                    <input type="email" value={addForm.parent_email} onChange={e => setAddForm({ ...addForm, parent_email: e.target.value })} required style={inputStyle} placeholder="البريد الإلكتروني" />
+                    <input value={addForm.parent_name} onChange={e => setAddForm({ ...addForm, parent_name: e.target.value })} style={inputStyle} placeholder="اسم ولي الأمر (اختياري)" />
+                    <input type="email" value={addForm.parent_email} onChange={e => setAddForm({ ...addForm, parent_email: e.target.value })} style={inputStyle} placeholder="البريد الإلكتروني (اختياري)" />
                     <input value={addForm.parent_phone} onChange={e => setAddForm({ ...addForm, parent_phone: e.target.value })} style={inputStyle} placeholder="رقم الهاتف (اختياري)" />
                   </div>
                 </div>
@@ -402,9 +433,9 @@ export default function Students() {
 
               <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
                 <button type="submit" disabled={addSaving} style={{ background: '#1a6b5a', color: 'white', border: 'none', borderRadius: '9px', padding: '10px 24px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
-                  {addSaving ? 'جاري الحفظ...' : 'إضافة الطالب'}
+                  {addSaving ? 'جاري الحفظ...' : editing ? 'حفظ التعديلات' : 'إضافة الطالب'}
                 </button>
-                <button type="button" onClick={() => setShowAddModal(false)} style={{ background: '#f3f4f6', color: '#374151', border: 'none', borderRadius: '9px', padding: '10px 20px', fontSize: '13px', cursor: 'pointer' }}>
+                <button type="button" onClick={closeStudentModal} style={{ background: '#f3f4f6', color: '#374151', border: 'none', borderRadius: '9px', padding: '10px 20px', fontSize: '13px', cursor: 'pointer' }}>
                   إلغاء
                 </button>
               </div>
@@ -438,7 +469,7 @@ export default function Students() {
                   </div>
 
                   <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '16px' }}>
-                    الأعمدة المتوقعة: اسم الطالب، المرحلة، اسم ولي الأمر، البريد الإلكتروني، رقم الهاتف، الحالة الصحية
+                    الأعمدة المطلوبة: اسم الطالب، المرحلة — الباقي اختياري (ولي الأمر، البريد، الهاتف، الحالة الصحية)
                   </p>
 
                   {importError && (
